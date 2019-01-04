@@ -103,7 +103,7 @@ em {
 	display: block;
 	width: 61px;
 	height: 40px;
-	background-image: url(../img/icons.png);
+	background-image: url(/public/assets/img/icons.png);
 	*zoom: 1;
 	_position: relative;
 }
@@ -193,7 +193,7 @@ a.carousel-control {
 .title .tip {
 	width: 66px;
 	height: 25px;
-	background-image: url(../img/icons.png);
+	background-image: url(/public/assets/img/icons.png);
 	background-position: 182px -78pt;
 	line-height: 30px;
 }
@@ -513,14 +513,14 @@ ul.brand-list li {
 	margin-left: 10px;
 	width: 35px;
 	height: 35px;
-	background: url(../img/bg0.png);
+	background: url(/public/assets/img/bg0.png);
 }
 
 .tabbox .tab a.on i {
 	display: block;
 	width: 35px;
 	height: 35px;
-	background: url(../img/bg0.png) -35px 0;
+	background: url(/public/assets/img/bg0.png) -35px 0;
 }
 
 .tabbox .text {

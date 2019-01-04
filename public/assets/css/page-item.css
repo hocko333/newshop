@@ -133,7 +133,7 @@ em {
   overflow: hidden;
   width: 13px;
   height: 13px;
-  background: url(../img/choosed.png) no-repeat;
+  background: url(/public/assets/img/choosed.png) no-repeat;
   _right: -1px;
   _bottom: -1px;
 }
@@ -481,7 +481,7 @@ ul.goods-intro li {
 .com-item .user-info .stars {
   width: 78px;
   height: 18px;
-  background: url(../img/star.png) no-repeat;
+  background: url(/public/assets/img/star.png) no-repeat;
 }
 
 .com-item .user-info .stars.star-5 {

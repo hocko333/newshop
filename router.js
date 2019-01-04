@@ -9,8 +9,10 @@ const router = express.Router()
 
 // 导入 controllers 中的模块
 const home = require('./controllers/home')
+const account = require('./controllers/account')
 
 router.get('/', home.index)
 
+router.get('/login', account.login)
 
 module.exports = router
