@@ -11,6 +11,10 @@ const createError = require('http-errors')
 const morgan = require('morgan')
 const favicon = require('express-favicon')
 
+// 导入 自定义模块
+const router = require('./router')
+const middleware = require('./middleware')
+
 /* 
   配置区
 */
@@ -29,6 +33,12 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 // 配置 静态资源
 app.use('/public', express.static(path.join(__dirname, 'public')))
+
+// 挂载自定义中间件
+app.use(middleware.global)
+
+// 挂载路由
+app.use(router)
 
 // 其他没处理的路径
 app.use((req, res, next) => {
@@ -49,5 +59,5 @@ app.use((err, req, res, next) => {
 })
 
 
-// 监听 3030 端口
-app.listen(3030, () => console.log('Sever is running at port 3030.'))
+// 监听 3010 端口
+app.listen(3010, () => console.log('Sever is running at port 3010.'))
