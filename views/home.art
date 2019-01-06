@@ -4,6 +4,25 @@
 {{/block}}
 {{block 'script'}}
 <script src="/public/assets/js/sui.carousel.js"></script>
+<script>
+  $('#likeBtn').on('click', function() {
+    var html =''
+    $.get('/like', function (data) {
+      data.forEach((item, i) => {
+        html += `
+        <li class="yui3-u-1-6">
+          <a href="/item/${item.id}" class="pic"><img src="${item.thumbnail}"></a>
+          <p>${item.name}</p>
+          <h3>¥${item.price}</h3>
+        </li>
+        `
+      })
+      $('#container_like').fadeOut(300, function () {
+        $('#container_like').html(html).fadeIn(300)
+      })
+    })
+})
+</script>
 {{/block}}
 {{block 'content'}}
 <!--列表-->
@@ -93,40 +112,17 @@
   <div class="py-container">
     <div class="title">
       <h3 class="fl">猜你喜欢</h3>
-      <a href="#" class="fr tip changeBnt"><i></i>换一换</a>
+      <a href="JavaScript:;" class="fr tip changeBnt" id="likeBtn"><i></i>换一换</a>
     </div>
     <div class="bd">
-      <ul class="clearfix yui3-g Favourate picLB">
+      <ul class="clearfix yui3-g Favourate picLB" id="container_like">
+        {{each like item i}}
         <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image4.suning.cn/uimg/b2c/newcatentries/0000000000-000000000139544578_1_200x200.jpg"></a>
-          <p>奥克斯（AUX）1.5匹 变频 快速冷暖 挂机空调KFR-35GW/BpHYG+3</p>
-          <h3>¥2199.00</h3>
+          <a href="/item/{{item.id}}" class="pic"><img src="{{item.thumbnail}}"></a>
+          <p>{{item.name}}</p>
+          <h3>¥{{item.price}}</h3>
         </li>
-        <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image2.suning.cn/uimg/b2c/newcatentries/0070065389-000000000147725302_1_200x200.jpg"></a>
-          <p>莱克吸尘器家用M7 大吸力无线手持吸尘器 无耗材除螨吸尘器</p>
-          <h3>¥1999.00</h3>
-        </li>
-        <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image3.suning.cn/uimg/b2c/newcatentries/0000000000-000000000129681927_2_200x200.jpg"></a>
-          <p>长帝(Changdi) 电烤箱 TRTF32 32L 上下管独立调温 低温发酵 旋转烤叉 防爆照明灯 电烤炉</p>
-          <h3>¥0.00</h3>
-        </li>
-        <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image5.suning.cn/uimg/b2c/newcatentries/0000000000-000000000170009025_2_200x200.jpg"></a>
-          <p>艾美特(Airmate)取暖器 HC22132-W 3秒速热 2200W大功率 居浴两用 欧式快热炉 电热烤火炉 电暖器</p>
-          <h3>¥0.00</h3>
-        </li>
-        <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image3.suning.cn/uimg/b2c/newcatentries/0000000000-000000000180535872_1_200x200.jpg"></a>
-          <p>Peppa Pig 小猪佩奇 牛奶曲奇饼干 25g/袋</p>
-          <h3>¥4.00</h3>
-        </li>
-        <li class="yui3-u-1-6">
-          <a href="item.html" class="pic"><img src="http://image1.suning.cn/uimg/b2c/newcatentries/0070086869-000000000193132610_1_200x200.jpg"></a>
-          <p>麦车饰 车载手机支架 仪表台多功能汽车用磁性手机座创意金属导航支架 通用车载收纳 汽车用品 手机饮料架 CXZJ-03</p>
-          <h3>¥39.00</h3>
-        </li>
+        {{/each}}
       </ul>
     </div>
   </div>
