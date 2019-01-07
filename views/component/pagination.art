@@ -1,0 +1,37 @@
+<div class="fr page">
+  <div class="sui-pagination pagination-large">
+    <ul>
+      <li class="prev {{catePage>1?'':'disabled'}}">
+        <a href="{{catePage>1?getOriginUrl(+catePage-1):'JavaScript:;'}}">«上一页</a>
+      </li>
+
+      {{if begin > 1}}
+      <li class="dotted"><span>...</span></li>
+      {{/if}}
+      
+      <% for(let i=begin; i <= end ; i++) { %>
+      <li class="{{catePage==i?'active':''}}"><a href="{{getOriginUrl(i)}}">{{i}}</a></li>
+      <% } %>
+
+      {{if end < totalPage}}
+      <li class="dotted"><span>...</span></li>
+      {{/if}}
+
+      <li class="next {{catePage<totalPage?'':'disabled'}}">
+        <a href="{{catePage<totalPage?getOriginUrl(+catePage+1):'JavaScript:;'}}">下一页»</a>
+      </li>
+    </ul>
+    <div>
+      <span>共 {{totalPage}} 页</span>
+      <form style="display: inline-block" autocomplete="off">到第 
+        {{each query v key}}
+          {{if key!='page'}}
+          <input type="hidden" name="{{key}}" value="{{v}}">
+          {{/if}}
+        {{/each}}
+        <input type="text" name="page" class="page-num"> 页 
+        <button class="page-confirm">确定</button>
+      </form>
+    </div>
+  </div>
+</div>
