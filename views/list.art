@@ -7,8 +7,10 @@
 <div class="main">
   <div class="py-container">
     <!--bread-->
+
     <div class="bread">
       <ul class="fl sui-breadcrumb">
+        {{if cate}}
         {{if cate.parent && cate.parent.parent}}
         <li><a href="/list/{{cate.parent.parent.id}}">{{cate.parent.parent.name}}</a></li>
         {{/if}}
@@ -16,6 +18,10 @@
         <li><a href="/list/{{cate.parent.id}}">{{cate.parent.name}}</a></li>
         {{/if}}
         <li class="active">{{cate.name}}</li>
+        {{/if}}
+        {{if q}}
+        <li class="active">搜索 "{{q}}" 的结果为:</li>
+        {{/if}}
       </ul>
     </div>
     <!--selector-->
@@ -50,6 +56,7 @@
     <div class="details">
       <div class="sui-navbar">
         <div class="navbar-inner filter">
+          {{if cate}}
           <ul class="sui-nav">
             <li class="{{sort=='commend'?'active':''}}"><a href="/list/{{cate.id}}?sort=commend">综合</a></li>
             <li class="{{sort=='quantity'?'active':''}}"><a href="/list/{{cate.id}}?sort=quantity">销量</a></li>
@@ -70,6 +77,29 @@
               {{/if}}
             </li>
           </ul>
+          {{/if}}
+          {{if q}}
+          <ul class="sui-nav">
+            <li class="{{sort=='commend'?'active':''}}"><a href="/search?q={{q}}&sort=commend">综合</a></li>
+            <li class="{{sort=='quantity'?'active':''}}"><a href="/search?q={{q}}&sort=quantity">销量</a></li>
+            <li class="{{sort=='market_time'?'active':''}}"><a href="/search?q={{q}}&sort=market_time">新品</a></li>
+            <li class="{{sort.includes('price')?'active':''}}">
+              {{if sort=='-price'}}
+              <a href="/search?q={{q}}&sort=price">价格
+                <span class="sui-icon icon-tb-fold"></span>
+              </a>
+              {{else if sort == 'price'}}
+              <a href="/search?q={{q}}&sort=-price">价格
+                <span class="sui-icon icon-tb-unfold"></span>
+              </a>
+              {{else}}
+              <a href="/search?q={{q}}&sort=-price">价格
+                <span class="sui-icon icon-tb-fold"></span>
+              </a>
+              {{/if}}
+            </li>
+          </ul>
+          {{/if}}
         </div>
       </div>
       <div class="goods-list">

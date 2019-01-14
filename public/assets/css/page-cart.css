@@ -164,11 +164,14 @@ a.increment {
 	text-align: center;
 	font-size: 18px;
 	font-family: "Microsoft YaHei";
-	line-height: 52px;
+  line-height: 52px;
+  font-weight: 600;
 }
 
 .sum-btn:hover {
-	background: #bf3a3c;
+  background: #bf3a3c;
+  color: #fff;
+  text-decoration: none;
 }
 
 .del {

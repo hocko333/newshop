@@ -1,0 +1,163 @@
+{{extend './layout/frame.art'}}
+{{block 'style'}}
+<link rel="stylesheet" href="/public/assets/css/page-cart.css">
+{{/block}}
+{{block 'script'}}
+<script src="/public/assets/js/template-web.js"></script>
+<script>
+  template.defaults.rules[0].test = /<\?(#?)((?:==|=#|[=-])?)[ \t]*([\w\W]*?)[ \t]*(-?)\?>/
+</script>
+<script type="text/html" id="cartTpl">
+  <br>
+  {{if !user}}
+  <div class="sui-msg msg-large msg-block msg-warning">
+    <div class="msg-con">您还没有登录！登录后购物车的商品将保存到您账号中&nbsp;&nbsp;&nbsp;<a href="/login" class="sui-btn btn-danger">立即登录</a></div>
+    <s class="msg-icon"></s>
+  </div>
+  {{/if}}
+    <div class="cart-main">
+      <div class="yui3-g cart-th">
+        <div class="yui3-u-1-24"><input type="checkbox" checked></div>
+        <div class="yui3-u-12-24">商品</div>
+        <div class="yui3-u-3-24">单价（元）</div>
+        <div class="yui3-u-3-24">数量</div>
+        <div class="yui3-u-4-24">小计（元）</div>
+        <div class="yui3-u-1-24">操作</div>
+      </div>
+      <div class="cart-item-list">
+        <div class="cart-body">
+          <div class="cart-list">
+            <? var count = 0 , totalPrice = 0?>
+            <? for(var i = 0 ; i < list.length ; i++) { ?>
+            <? count += +(list[i].amount) ?>
+            <? totalPrice += list[i].amount * list[i].price ?>
+            <ul class="goods-list yui3-g">
+              <li class="yui3-u-1-24"><input type="checkbox"></li>
+              <li class="yui3-u-12-24">
+                <div class="good-item">
+                  <div class="item-img">
+                    <img src="<?=list[i].thumbnail?>">
+                  </div>
+                  <div class="item-msg"><?=list[i].name?></div>
+                </div>
+              </li>
+              <li class="yui3-u-3-24">
+                <span class="price"><?=list[i].price?></span>
+              </li>
+              <li class="yui3-u-3-24">
+                <a data-id="<?=list[i].id?>" href="JavaScript:;" class="increment mins">-</a>
+                <input autocomplete="off" type="text" value="<?=list[i].amount?>" minnum="1" class="itxt">
+                <a data-id="<?=list[i].id?>" href="JavaScript:;" class="increment plus">+</a>
+              </li>
+              <li class="yui3-u-4-24">
+                <span class="sum"><?=(list[i].price*list[i].amount).toFixed(2)?></span>
+              </li>
+              <li class="yui3-u-1-24">
+                <a data-id="<?=list[i].id?>" id="btn_delete" href="JavaScript:;">删除</a>
+              </li>
+            </ul>
+            <? } ?>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="cart-tool">
+      <div class="money-box">
+        <div class="sumprice">
+          <span>共 <strong><?=count?></strong> 件商品</span><br>
+          <span><em>总价（不含运费）：</em><i class="summoney">¥ <?=totalPrice.toFixed(2)?></i></span>
+        </div>
+        <div class="sumbtn">
+          <a class="sum-btn " href="checkout.html">去结算</a>
+        </div>
+      </div>
+    </div>
+</script>
+<script>
+  $(function () {
+
+    // 发送 ajax请求 获取购物车列表
+    $.ajax({
+      url: '/cart/find',
+      method: 'get',
+      dataType: 'json',
+      success: function (resData) {
+        window.list = resData.list
+        $('#allgoods').html(template('cartTpl', resData))
+      },
+      error: function (error) {
+        console.log(error)
+      }
+    })
+
+    $('#allgoods')
+      .on('click', '.increment', function () {
+        var amount = +($(this).siblings('input[type=text]').val())
+        var reg = /\d/
+        if (!reg.test(amount)) return
+        if ($(this).hasClass('mins')) {
+          if (amount < 2) return;
+          --amount
+        } else {
+          ++amount
+        }
+        var id = $(this).data('id')
+        $.ajax({
+          url: '/cart/edit',
+          method: 'POST',
+          data: {
+            id,
+            amount
+          },
+          dataType: 'json',
+          success: function (resData) {
+            if (resData.success) {
+              var cart = list.find(item => item.id == id)
+              cart.amount = amount
+              $('#allgoods').html(template('cartTpl', {list}))
+            }
+          },
+          error: function (err) {
+            console.log(err)
+          }
+        })
+      })
+      .on('click', '#btn_delete', function () {
+        if (!window.confirm('您确定删除吗?')) return
+        var id = $(this).data('id')
+        $.ajax({
+          url: '/cart/delete',
+          method: 'POST',
+          data: {id},
+          dataType: 'json',
+          success: function (resData) {
+            if (resData.success) {
+              var cartIndex = window.list.findIndex(item => item.id == id)
+              window.list.splice(cartIndex, 1)
+              $('#allgoods').html(template('cartTpl', {list}))
+            }
+          },
+          error: function (err) {
+            console.log(err)
+          }
+        })
+      })
+      // 全选
+      .on('change', '.cart-th input[type=checkbox]', function () {
+        $('.cart-body input[type=checkbox]')
+          .prop('checked', $('.cart-th input[type=checkbox]').prop('checked'))
+      })
+      // 单选
+      .on('change', '.cart-body input[type=checkbox]', function () {
+        $('.cart-th input[type=checkbox]')
+        .prop('checked', $('.cart-body input[type=checkbox]').length == $('.cart-body input[type=checkbox]:checked').length)
+      })
+
+  })
+</script>
+{{/block}}
+{{block 'content'}}
+<div class="py-container">
+  <div class="allgoods" id="allgoods"></div>
+</div>
+{{/block}}

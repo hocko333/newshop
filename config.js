@@ -4,12 +4,28 @@ exports.site = {
   keywords: '网上购物,网上商城,家电,手机,电脑,服装,居家,母婴,美妆,个护,食品,生鲜,品优购',
   title: '品优购(PYG.COM)-正品低价、品质保障、配送及时、轻松购物！'
 }
+
 exports.api = {
   // baseURL: 'https://ns-api.uieee.com/v1/',
   baseURL: 'http://localhost:8000/v1/',
-  timeout: 3000,
+  timeout: 5000,
   auth: {
     username: 'newshop-frontend',
     password: 'd8667837fce5a0270a35f4a8fa14be479fadc774'
   }
+}
+
+exports.cookie = {
+  cart_key: 'ckckck',
+  cart_expires: 30 * 24 * 60 * 60 * 1000,
+  auto_login_key: 'auto_login_key',
+  auto_login_expires: 7 * 24 * 60 * 60 * 1000
+}
+
+exports.mysqlSession = {
+  host: 'localhost',
+  port: 3306,
+  user: 'root',
+  password: 'root',
+  database: 'newshop'
 }

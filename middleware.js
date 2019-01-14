@@ -10,6 +10,10 @@ const categoryModel = require('./models/category')
 exports.global = (req, res, next) => {
   // seo 相关信息
   res.locals.site = config.site
+  // 全局挂载 user
+  if (req.session.user) {
+    res.locals.user = req.session.user
+  }
   // 获取侧边分类导航 树状数据
   // 判断 缓存中是否有数据
   if (!req.app.locals.category) {

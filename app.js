@@ -10,14 +10,19 @@ const expressTpl = require('express-art-template')
 const createError = require('http-errors')
 const morgan = require('morgan')
 const favicon = require('express-favicon')
+const cookieParser = require('cookie-parser')
+const session = require('express-session')
+const MySQLStore = require('express-mysql-session')(session)
 
 // 导入 自定义模块
 const router = require('./router')
 const middleware = require('./middleware')
+const config = require('./config')
 
 /* 
   配置区
 */
+
 // 配置 express-favicon
 app.use(favicon(path.join(__dirname, 'favicon.ico')))
 // 配置 日志信息
@@ -33,6 +38,17 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 // 配置 静态资源
 app.use('/public', express.static(path.join(__dirname, 'public')))
+// 配置 session 持久化中间件
+const sessionStore = new MySQLStore(config.mysqlSession)
+app.use(session({
+  key: 'PYGSID',
+  secret: 'pyg_session_secret',
+  store: sessionStore,
+  resave: false,
+  saveUninitialized: true
+}))
+// 配置 cookie-parser
+app.use(cookieParser())
 
 // 挂载自定义中间件
 app.use(middleware.global)

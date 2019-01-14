@@ -6,9 +6,15 @@
         <div class="shortcut">
           <ul class="fl">
             <li class="f-item">品优购欢迎您！</li>
-            <li class="f-item">请
-              <a href="login.html">登录</a>
-              <a href="register.html">免费注册</a>
+            <li class="f-item">
+              {{if user}}
+              &nbsp;[&nbsp;<a href="/member">{{user.username}}</a>&nbsp;]
+              &nbsp;&nbsp;&nbsp;<a href="/logout">退出</a>
+              {{else}}
+              请
+              <a href="/login">登录</a>
+              <a href="/register">免费注册</a>
+              {{/if}}
             </li>
           </ul>
           <ul class="fr">
@@ -37,10 +43,10 @@
           </div>
           <div class="yui3-u Center searchArea">
             <div class="search">
-              <form action="" class="sui-form form-inline">
+              <form action="/search" class="sui-form form-inline">
                 <div class="input-append">
-                  <input type="text" id="autocomplete" type="text" class="input-error input-xxlarge">
-                  <button class="sui-btn btn-xlarge btn-danger" type="button">搜索</button>
+                  <input type="text" name="q" class="input-error input-xxlarge" value="{{q}}" autocomplete="off">
+                  <button class="sui-btn btn-xlarge btn-danger">搜索</button>
                 </div>
               </form>
             </div>
@@ -60,7 +66,7 @@
             <div class="fr shopcar">
               <div class="show-shopcar">
                 <span class="car"></span>
-                <a class="sui-btn btn-default btn-xlarge" href="cart.html">
+                <a class="sui-btn btn-default btn-xlarge" href="/cart">
                   <span>我的购物车</span>
                   <i class="shopnum">0</i>
                 </a>
