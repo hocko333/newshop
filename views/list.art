@@ -111,7 +111,7 @@
             <div class="attr"><em>{{item.name}}</em></div>
             <div class="commit"><i class="command">已有2000人评价</i></div>
             <div class="operate">
-              <a href="cart-add.html" class="sui-btn btn-bordered btn-danger">加入购物车</a>
+              <a href="/cart/add?id={{item.id}}" class="sui-btn btn-bordered btn-danger">加入购物车</a>
               <a href="#" class="sui-btn btn-bordered">对比</a>
               <a href="#" class="sui-btn btn-bordered">关注</a>
             </div>

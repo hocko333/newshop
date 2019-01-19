@@ -21,6 +21,8 @@ exports.index = (req, res, next) => {
   // 把验证码图片 放入模板
   res.locals.captcha = captcha.data
 
+  res.locals.returnUrl = req.query.returnUrl || '/member'
+  
   res.render('login')
 }
 
@@ -70,13 +72,13 @@ exports.login = (req, res, next) => {
       res.clearCookie(config.cookie.cart_key)
       // 清除 验证码答案 session
       req.session.captcha = null
-      // 重定向到 个人中心页面
-      res.redirect('/member')
+      // 重定向到 returnUrl
+      res.redirect(body.returnUrl || '/member')
     })
     .catch(err => {
       // 统一处理登录失败的错误
       if (err.status != 400) {
-        res.locals.errMessage = '请重试'
+        res.locals.errMessage = '请重新输入'
       } else {
         res.locals.errMessage = err.message
       }
@@ -92,4 +94,10 @@ exports.login = (req, res, next) => {
       res.render('login')
     })
 
+}
+
+// 退出
+exports.logout = (req, res, next) => {
+  req.session.user = null
+  res.redirect('/login')
 }

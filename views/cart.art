@@ -29,10 +29,12 @@
           <div class="cart-list">
             <? var count = 0 , totalPrice = 0?>
             <? for(var i = 0 ; i < list.length ; i++) { ?>
-            <? count += +(list[i].amount) ?>
-            <? totalPrice += list[i].amount * list[i].price ?>
+            <? if (list[i].isChecked) {
+              count += +(list[i].amount)
+              totalPrice += list[i].amount * list[i].price
+            }?>
             <ul class="goods-list yui3-g">
-              <li class="yui3-u-1-24"><input type="checkbox"></li>
+              <li class="yui3-u-1-24"><input type="checkbox" data-id="<?=list[i].id?>" <?=list[i].isChecked?'checked':''?>></li>
               <li class="yui3-u-12-24">
                 <div class="good-item">
                   <div class="item-img">
@@ -68,7 +70,7 @@
           <span><em>总价（不含运费）：</em><i class="summoney">¥ <?=totalPrice.toFixed(2)?></i></span>
         </div>
         <div class="sumbtn">
-          <a class="sum-btn " href="checkout.html">去结算</a>
+          <a class="sum-btn " href="JavaScript:;">去结算</a>
         </div>
       </div>
     </div>
@@ -82,8 +84,14 @@
       method: 'get',
       dataType: 'json',
       success: function (resData) {
-        window.list = resData.list
-        $('#allgoods').html(template('cartTpl', resData))
+        const list = resData.list.map(item => {
+          item.isChecked = true
+          return item
+        })
+        window.list = list
+        $('#allgoods').html(template('cartTpl', {
+          list
+        }))
       },
       error: function (error) {
         console.log(error)
@@ -114,7 +122,9 @@
             if (resData.success) {
               var cart = list.find(item => item.id == id)
               cart.amount = amount
-              $('#allgoods').html(template('cartTpl', {list}))
+              $('#allgoods').html(template('cartTpl', {
+                list
+              }))
             }
           },
           error: function (err) {
@@ -128,13 +138,17 @@
         $.ajax({
           url: '/cart/delete',
           method: 'POST',
-          data: {id},
+          data: {
+            id
+          },
           dataType: 'json',
           success: function (resData) {
             if (resData.success) {
               var cartIndex = window.list.findIndex(item => item.id == id)
               window.list.splice(cartIndex, 1)
-              $('#allgoods').html(template('cartTpl', {list}))
+              $('#allgoods').html(template('cartTpl', {
+                list
+              }))
             }
           },
           error: function (err) {
@@ -144,13 +158,51 @@
       })
       // 全选
       .on('change', '.cart-th input[type=checkbox]', function () {
-        $('.cart-body input[type=checkbox]')
-          .prop('checked', $('.cart-th input[type=checkbox]').prop('checked'))
+        // $('.cart-body input[type=checkbox]')
+        //   .prop('checked', $('.cart-th input[type=checkbox]').prop('checked'))
+        // const list = window.list.map(item => {
+        //   item.isChecked = true
+        //   return item
+        // })
+        // window.list = list
+        // $('#allgoods').html(template('cartTpl', {list}))
+        // $('.cart-th input[type=checkbox]')
+        //   .prop('checked', $('.cart-body input[type=checkbox]').length == $(
+        //     '.cart-body input[type=checkbox]:checked').length)
+        const isChecked = $(this).prop('checked')
+        $('.cart-body [type="checkbox"]').prop('checked', isChecked)
+        const list = window.list.map(item => {
+          item.isChecked = isChecked
+          return item
+        })
+        window.list = list
+        $('.allgoods').html(template('cartTpl', {
+          list: window.list
+        }))
+        const count = $('.cart-body [type="checkbox"]').length
+        const checkedCount = $('.cart-body [type="checkbox"]:checked').length
+        $('.cart-th [type="checkbox"]').prop('checked', count == checkedCount)
       })
       // 单选
       .on('change', '.cart-body input[type=checkbox]', function () {
+        const id = $(this).data('id')
+        const cart = window.list.find(item => item.id == id)
+        cart.isChecked = $(this).prop('checked')
+        $('#allgoods').html(template('cartTpl', {
+          list: window.list
+        }))
         $('.cart-th input[type=checkbox]')
-        .prop('checked', $('.cart-body input[type=checkbox]').length == $('.cart-body input[type=checkbox]:checked').length)
+          .prop('checked', $('.cart-body input[type=checkbox]').length == $(
+            '.cart-body input[type=checkbox]:checked').length)
+      })
+      .on('click', '.sum-btn', function () {
+        const checks = $('.cart-body input[type=checkbox]:checked')
+        let idArr = []
+        checks.each((i, item) => {
+          idArr.push($(item).data('id'))
+        })
+        const ids = idArr.join(',')
+        window.location.href = '/order/create?ids=' + ids
       })
 
   })

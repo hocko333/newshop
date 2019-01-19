@@ -23,7 +23,7 @@
             </li>
             <li class="f-item space"></li>
             <li class="f-item">
-              <a href="member.html">我的品优购</a>
+              <a href="/member">我的品优购</a>
             </li>
             <li class="f-item space"></li>
             <li class="f-item">关注品优购</li>
@@ -68,9 +68,19 @@
                 <span class="car"></span>
                 <a class="sui-btn btn-default btn-xlarge" href="/cart">
                   <span>我的购物车</span>
-                  <i class="shopnum">0</i>
+                  <i class="shopnum">{{cartPreviewList && cartPreviewList.totalAmount || 0}}</i>
                 </a>
-                <div class="clearfix shopcarlist"></div>
+                <div class="clearfix shopcarlist">
+                  <ul>
+                    {{if cartPreviewList && cartPreviewList.nameList}}
+                    {{each cartPreviewList.nameList}}
+                    <li>
+                      {{$value}}
+                    </li>
+                    {{/each}}
+                    {{/if}}
+                  </ul>
+                </div>
               </div>
             </div>
           </div>

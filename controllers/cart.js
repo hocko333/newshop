@@ -9,6 +9,7 @@
 //2.未登录 去操作的是客户端的cookie
 const config = require('../config')
 const productModel = require('../models/product')
+const cartModel = require('../models/cart')
 
 // 添加购物车
 exports.add = (req, res, next) => {
@@ -16,7 +17,11 @@ exports.add = (req, res, next) => {
   const amount = +req.query.amount || 1
   if (req.session.user) {
     // 已登录
-
+    cartModel.add(req.session.user.id, id, amount)
+      .then(data => {
+        res.redirect('/cart/success?id=' + id + '&amount=' + amount)
+      })
+      .catch(err => next(err))
   } else {
     // 未登录
     const cookieJson = req.cookies[config.cookie.cart_key] || "[]"
@@ -34,19 +39,27 @@ exports.add = (req, res, next) => {
     res.cookie(config.cookie.cart_key, JSON.stringify(cookieArr), {
       expires
     })
-    productModel.getProduct(id, true)
-      .then(data => {
-        res.locals.cartInfo = {
-          id: data.id,
-          name: data.name,
-          thumbnail: data.thumbnail,
-          amount
-        }
-        res.render('cart-add')
-
-      })
-      .catch(err => next(err))
+    res.redirect('/cart/success?id=' + id + '&amount=' + amount)
   }
+}
+
+// 购物车添加成功的页面
+exports.addSuc = (req, res, next) => {
+  const {
+    amount,
+    id
+  } = req.query
+  productModel.getProduct(id, true)
+    .then(data => {
+      res.locals.cartInfo = {
+        id: data.id,
+        name: data.name,
+        thumbnail: data.thumbnail,
+        amount
+      }
+      res.render('cart-add')
+    })
+    .catch(err => next(err))
 }
 
 // 响应 购物车页面
@@ -54,25 +67,40 @@ exports.index = (req, res, next) => {
   res.render('cart')
 }
 
-// 查询购物车的接口
+// 查询购物车的接口 ajax
 exports.find = (req, res, next) => {
-  const cookieJson = req.cookies[config.cookie.cart_key] || "[]"
-  const cookieArr = JSON.parse(cookieJson)
-  const axiosArr = cookieArr.map((item, i) => productModel.getProduct(item.id, true))
-  Promise.all(axiosArr)
-    .then(results => {
-      let list = results.map((item, i) => ({
-        id: item.id,
-        name: item.name,
-        price: item.price,
-        thumbnail: item.thumbnail,
-        amount: cookieArr[i].amount
-      }))
-      res.json({
-        list
+  if (req.session.user) {
+    // 已登录
+    cartModel.find(req.session.user.id)
+      .then(list => {
+        res.json({list})
       })
-    })
-    .catch(err => next(err))
+      .catch(err => {
+        res.json({list: []})
+      })
+  } else {
+    // 未登录
+    const cookieJson = req.cookies[config.cookie.cart_key] || "[]"
+    const cookieArr = JSON.parse(cookieJson)
+    const axiosArr = cookieArr.map((item, i) => productModel.getProduct(item.id, true))
+    Promise.all(axiosArr)
+      .then(results => {
+        let list = results.map((item, i) => ({
+          id: item.id,
+          name: item.name,
+          price: item.price,
+          thumbnail: item.thumbnail,
+          amount: cookieArr[i].amount
+        }))
+        res.json({
+          list
+        })
+      })
+      .catch(err => {
+        res.json({list: []})
+      })
+  }
+
 }
 
 // 编辑购物车数量
@@ -83,6 +111,17 @@ exports.edit = (req, res, next) => {
   } = req.body
   if (req.session.user) {
     // TODO 已登录
+    cartModel.edit(req.session.user.id, id, amount)
+      .then(data => {
+        res.json({
+          success: true
+        })
+      })
+      .catch(err => {
+        res.json({
+          success: false
+        })
+      })
   } else {
     // 未登录 操作cookie
     const cookieJson = req.cookies[config.cookie.cart_key] || "[]"
@@ -107,6 +146,17 @@ exports.delete = (req, res, next) => {
   } = req.body
   if (req.session.user) {
     // TODO 已登录
+    cartModel.delete(req.session.user.id, id)
+      .then(data => {
+        res.json({
+          success: true
+        })
+      })
+      .catch(err => {
+        res.json({
+          success: false
+        })
+      })
   } else {
     // 未登录
     // 取出 cookie 中的数据

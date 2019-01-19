@@ -25,6 +25,7 @@
             <form action="/login" method="POST" class="sui-form" autocomplete="off">
               <div class="input-prepend">
                 <span class="add-on loginname"></span>
+                <input type="hidden" name="returnUrl" value="{{returnUrl}}">
                 <input type="text" name="username" class="span2 input-xfat" placeholder="用户名/邮箱">
               </div>
               <div class="input-prepend">
