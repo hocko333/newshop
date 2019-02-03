@@ -128,6 +128,6 @@
 </div>
 <div class="order-summary py-container">
   <div class="static fl"><i class="number">{{order.total_amount}}</i> 件商品，总商品金额 <i>¥{{order.total_price}}</i></div>
-  <a class="sui-btn btn-danger btn-xlarge fr" href="/pay">提交订单</a>
+  <a class="sui-btn btn-danger btn-xlarge fr" href="/pay?num={{order.order_number}}">提交订单</a>
 </div>
 {{/block}}

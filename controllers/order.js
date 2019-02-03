@@ -27,3 +27,14 @@ exports.checkout = (req, res, next) => {
     })
     .catch(err => next(err))
 }
+
+// 我的订单
+exports.myOrder = (req, res, next) => {
+  const id = req.params.id
+  orderModel.allOrder(id)
+    .then(data => {
+      res.locals.orders = data
+      res.render('member-order')
+    })
+    .catch(err => next(err))
+}

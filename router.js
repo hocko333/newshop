@@ -15,6 +15,7 @@ const product = require('./controllers/product')
 const cart = require('./controllers/cart')
 const member = require('./controllers/member')
 const order = require('./controllers/order')
+const pay = require('./controllers/pay')
 
 /* ----------------- 首页 相关路由 --------------------- */
 router.get('/', home.index)
@@ -44,5 +45,10 @@ router.get('/member', checkLogin, member.index) // 响应个人中心页面
 /* ----------------- 订单 相关路由 --------------------- */
 router.get('/order/create', checkLogin, order.create) // 生成订单的路由
 router.get('/order/checkout', checkLogin, order.checkout) // 生成订单的具体页面
+router.get('/member-order/:id', checkLogin, order.myOrder)  // 响应我的订单页面
+
+/* ----------------- 支付 相关路由 --------------------- */
+router.get('/pay', checkLogin, pay.index)  // 订单加密 并重定向付款页面
+router.get('/pay/callback', checkLogin, pay.callback)  // 用户支付完成的回调地址
 
 module.exports = router

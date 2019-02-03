@@ -1,0 +1,80 @@
+{{extend './layout/frame.art'}}
+{{block 'style'}}
+<link rel="stylesheet" href="/public/assets/css/page-cart.css">
+{{/block}}
+{{block 'script'}}
+<script src="/public/assets/js/sui.modal.js"></script>
+{{/block}}
+{{block 'content'}}
+<div class="checkout py-container">
+  <div class="sui-msg msg-large msg-block msg-success">
+    <div class="msg-con">恭喜您，支付成功！我们会尽快给您发货！！！</div>
+    <s class="msg-icon"></s>
+  </div>
+  <div class="checkout-steps">
+    <div class="step-cont">
+      <div class="addressInfo">
+        <ul class="addr-detail">
+          <li class="addr-item selected">
+            {{order.express_address}}
+          </li>
+        </ul>
+      </div>
+    </div>
+    <div class="hr"></div>
+    <!--支付和送货-->
+    <div class="payshipInfo">
+      <div class="step-tit">
+        <h5>支付方式</h5>
+      </div>
+      <div class="step-cont">
+        <ul class="payType">
+          <li class="selected">支付宝</li>
+        </ul>
+      </div>
+      <div class="hr"></div>
+      <div class="step-tit">
+        <h5>送货清单</h5>
+      </div>
+      <div class="step-cont">
+        <ul class="send-detail">
+          <li>
+            <div class="sendGoods">
+              <span>商品清单：</span>
+              {{each order.products item i}}
+              <ul class="yui3-g">
+                <li class="yui3-u-1-6">
+                  <img src="{{item.thumbnail}}">
+                </li>
+                <li class="yui3-u-2-3">
+                  <div class="desc">{{item.name}}</div>
+                </li>
+                <li class="yui3-u-1-12">
+                  <div class="price">￥{{item.price}}</div>
+                </li>
+                <li class="yui3-u-1-12">
+                  <div class="num">x<strong>{{item.amount}}</strong></div>
+                </li>
+              </ul>
+              {{/each}}
+            </div>
+          </li>
+          <li></li>
+          <li></li>
+        </ul>
+      </div>
+      <div class="hr"></div>
+    </div>
+    <div class="linkInfo">
+      <div class="step-tit">
+        <h5>发票信息</h5>
+      </div>
+      <div class="step-cont">
+        <span>普通发票（电子）</span>
+        <span>个人</span>
+        <span>明细</span>
+      </div>
+    </div>
+  </div>
+</div>
+{{/block}}
